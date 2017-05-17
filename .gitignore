@@ -1,8 +1,13 @@
 logs
 target
+redis.conf
+
 /.idea
 /.idea_modules
 /.classpath
 /.project
 /.settings
 /RUNNING_PID
+/db/*
+
+!*.gitkeep
