@@ -11,6 +11,7 @@ import javax.inject._
 import play.api.Play.current
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.json._
 
 class AuthenticatedRequest[A](val user: User, request: Request[A]) extends WrappedRequest[A](request)
 
@@ -41,10 +42,17 @@ case class Verifier(ws: WSClient, cache: CacheApi) {
     }
   }
   val verifyToken: (String) => Future[Boolean] = (token) => {
-    getPublicKey().map(key => {
-      println(key)
-      println(token)
-      true
+    getPublicKey().map(response => {
+      println(response)
+      val jsonResponse = Json.parse(response)
+      val success = (jsonResponse \ "success").as[Boolean]
+      if(success) {
+        val key = (jsonResponse \ "data" \ "publicKey").as[String]
+        cache.set("publicKey", key)
+        true
+      } else {
+        false
+      }
     })
   }
 }
