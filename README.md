@@ -9,9 +9,10 @@ The service uses JWT tokens for authentication, it was created to support [Authe
 ### Conversations
 
 * Creating a new conversation
+
 `POST    /api/conversations`
 
-Headers:
+**Headers:**
 ```
 Authentication: USERTOKEN
 Content-Type: application/json
