@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % Test,
   ws,
   cache,
-  "com.pauldijou" %% "jwt-play" % "0.12.1"
+  "com.pauldijou" %% "jwt-play" % "0.12.1",
+  "org.sedis" %% "sedis" % "1.2.2"
 )
 
 // Adds additional packages into Twirl

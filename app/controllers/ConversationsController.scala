@@ -24,7 +24,12 @@ class ConversationsController @Inject()(auth: Authentication) extends Controller
     jsonBody match {
       case Some(json) => {
         val newConversation: Conversation = Conversation((json \ "participants").as[Vector[String]], (json \ "admins").as[Vector[String]])
-        if(newConversation.save()) Ok("Conversation created!") else BadRequest
+        val result = newConversation.save(ConversationKey((json \ "createdBy").as[String], (json \ "conversationName").as[String]))
+        if(result) {
+          Ok("Conversation created!")
+        } else {
+          Ok("Conversation already exists")
+        }
       }
       case None => BadRequest
     }
