@@ -23,13 +23,50 @@ class ConversationsController @Inject()(auth: Authentication) extends Controller
     val jsonBody: Option[JsValue] = request.body.asJson
     jsonBody match {
       case Some(json) => {
-        val newConversation: Conversation = Conversation((json \ "participants").as[Vector[String]], (json \ "admins").as[Vector[String]])
-        val result = newConversation.save(ConversationKey((json \ "createdBy").as[String], (json \ "conversationName").as[String]))
-        if(result) {
-          Ok("Conversation created!")
-        } else {
-          Ok("Conversation already exists")
+        try{
+          val newConversation: Conversation = Conversation((json \ "participants").as[Vector[String]], (json \ "admins").as[Vector[String]])
+          val result = newConversation.save(ConversationKey((json \ "createdBy").as[String], (json \ "conversationName").as[String]))
+          if(result) {
+            Ok("Conversation created!")
+          } else {
+            Ok("Conversation already exists")
+          }
+        } catch {
+          case e: JsResultException => Ok(JsError.toJson(e.errors))
+          case x: Throwable => Ok(x.toString())
         }
+      }
+      case None => BadRequest
+    }
+  }
+
+  def getParticipants = auth.AuthenticatedAction { implicit request =>
+    val jsonBody: Option[JsValue] = request.body.asJson
+    jsonBody match {
+      case Some(json) => {
+
+        try {
+          val conversationKey: JsResult[ConversationKey] = json.validate[ConversationKey]
+          conversationKey match {
+            case JsSuccess(ck, path) => {
+              println(ck)
+              val result = ck.getParticipants()
+              result match {
+                case Some(r) => Ok(Json.toJson(r))
+                case None => Ok("Conversation does not exist")
+              }
+            }
+            case error: JsError => {
+              println(JsError.toJson(error).toString())
+              Ok(JsError.toJson(error))
+            }
+          }
+        } catch {
+          case e: JsResultException => Ok(JsError.toJson(e.errors))
+          case x: Throwable => Ok(x.toString())
+        }
+
+
       }
       case None => BadRequest
     }

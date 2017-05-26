@@ -38,6 +38,8 @@ UNIQUENESS: The pair (createdBy, conversationName) is used to ensure uniqueness,
 * Unauthorized/Forbidden: if authentication header token invalid
 
 
-
 ## Tech
 The application is written in Scala and using Play Framework, the DB is Redis
+
+## Starting the DB
+Do not forget to rename `redis.example.conf` to `redis.conf` and to specify the configuration file when launching the DB as follows: `redis-server ./redis.conf`
