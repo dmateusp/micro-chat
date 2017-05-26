@@ -22,6 +22,7 @@ class Authentication @Inject()(ws: WSClient, cache: CacheApi){
     def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]) = {
       request.headers.get("Authentication") match {
         case Some(token) => {
+          println("hey!")
           verifier.verifyToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJlbWFpbCI6ImRtYXRldXNwQGdtYWlsLmNvbSIsImlhdCI6MTQ5NTE4Nzk2MSwiZXhwIjoxNDk3Nzc5OTYxfQ.dN8RIvyS3X5_Cxr0R8w6PG2h_vMUmjJf4d9755OL1EV6ZMjaDDvj2NX3fDByZuigsFssyExNNvQbDPfAX9jBLrVjH3C3-pgbbvBlP0E1-m921d70vNxQFPfpACGA5IRJ5IHIuV-dvp6nEWDoMJaso5cIXZaPLUpinNkipDNRBHqSH4MCVLY0Lwvsuf59I73YNjaKSyIywGPpZUd1IPty2OWj9-56vR2cKKrg4m4OWU4REarXTbTix5YKjo5nAdFF9QSXoxnjZ50VDGzZTnWsO6UkAdl5gUTOIXn6hB8KSG42DoOUwvfwmqcBPRbWOaEmtKqhvBlwyH-7hQlHwMTfKVNn44QZSn-R9-rusZtbMX7d4viZm2_8HaO4AyT7-FlQlkT0VyIijJPNea_latMmL3c8BWRBQ-SgUE3DiSW-cdDroL1lmAx6HRgu1zs8zie5b9UAKtOCDTih9lC5-Y6Ef38Cwp4CDSf6Ji5ni2i5pb3YOOdWXlEDMAemVgg957c8P9CJJwfzwHJGeMNN3LWSyndhXY-vZ82CUefF6rQaA_bTuo6EXlAClB3CgnHMPYGOGYd5kCDheQYT0R5yMM6BIkf6weH62fRCZaAUFhA48tr3afmnfkN12X4b7IgBiUbX5tNMqJeqd4Wl1p-vqA5EbKk_x7aoIspephX68izdP2E").map(isValidToken => if(isValidToken) println("Valid!") else println("Not valid!"))
           block(new AuthenticatedRequest(AuthenticatedUser(token), request))
         }

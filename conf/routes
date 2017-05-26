@@ -8,3 +8,5 @@ GET     /api/messages                  controllers.MessagesController.getAll
 
 # CONVERSATIONS
 POST   /api/conversations              controllers.ConversationsController.create
+
+GET    /api/users/:user                controllers.ConversationsController.getConversations(user: String)

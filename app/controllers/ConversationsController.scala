@@ -21,11 +21,14 @@ class ConversationsController @Inject()(auth: Authentication) extends Controller
 
   def create = auth.AuthenticatedAction { implicit request =>
     val jsonBody: Option[JsValue] = request.body.asJson
+    println("he")
     jsonBody match {
       case Some(json) => {
         try{
+          println("jeorjaer")
           val newConversation: Conversation = Conversation((json \ "participants").as[Vector[String]], (json \ "admins").as[Vector[String]])
           val result = newConversation.save(ConversationKey((json \ "createdBy").as[String], (json \ "conversationName").as[String]))
+          println("heu")
           if(result) {
             Ok("Conversation created!")
           } else {
@@ -36,38 +39,15 @@ class ConversationsController @Inject()(auth: Authentication) extends Controller
           case x: Throwable => Ok(x.toString())
         }
       }
-      case None => BadRequest
+      case None => Ok("hee")
     }
   }
 
-  def getParticipants = auth.AuthenticatedAction { implicit request =>
-    val jsonBody: Option[JsValue] = request.body.asJson
-    jsonBody match {
-      case Some(json) => {
-
-        try {
-          val conversationKey: JsResult[ConversationKey] = json.validate[ConversationKey]
-          conversationKey match {
-            case JsSuccess(ck, path) => {
-              println(ck)
-              val result = ck.getParticipants()
-              result match {
-                case Some(r) => Ok(Json.toJson(r))
-                case None => Ok("Conversation does not exist")
-              }
-            }
-            case error: JsError => {
-              Ok(JsError.toJson(error))
-            }
-          }
-        } catch {
-          case e: JsResultException => Ok(JsResultExceptionJson.toJson(e))
-          case x: Throwable => Ok(x.toString())
-        }
-
-
-      }
-      case None => BadRequest
+  def getConversations(user: String) = auth.AuthenticatedAction { implicit request =>
+    val result = User.getConversations(user)
+    result match {
+      case Some(r) => Ok(Json.toJson(r))
+      case None => Ok("User does not exist")
     }
   }
 }
