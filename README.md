@@ -34,6 +34,11 @@ UNIQUENESS: The pair (createdBy, conversationName) is used to ensure uniqueness,
 
 **Response:**
 * Ok: "Conversation created!"
+* Ok with error when a field is missing, example:
+```
+{
+  "error": "'conversationName' is undefined on object: {\"participants\":[\"user@gmail.com\", \"user2@mail.com\"],\"admins\":[\"user@gmail.com\"],\"createdBy\":\"user@gmail.com\"}"
+}```
 * Bad request: if body/headers invalid/missing or if conversation already exists
 * Unauthorized/Forbidden: if authentication header token invalid
 
