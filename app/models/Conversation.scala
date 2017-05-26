@@ -86,8 +86,4 @@ object ConversationKey {
       (JsPath \ "createdBy").read[String] and
       (JsPath \ "conversationName").read[String]
     )(ConversationKey.apply _)
-/*
-  val validate: (JsValue) => JsResult[ConversationKey] = (ck) => (
-    (ck \ "createdBy").validate[String](Reads.required _) and
-    (ck \ "conversationName").validate[String](Reads.required _))(ConversationKey.apply _)*/
 }

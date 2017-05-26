@@ -32,7 +32,7 @@ class ConversationsController @Inject()(auth: Authentication) extends Controller
             Ok("Conversation already exists")
           }
         } catch {
-          case e: JsResultException => Ok(JsError.toJson(e.errors))
+          case e: JsResultException => Ok(JsResultExceptionJson.toJson(e))
           case x: Throwable => Ok(x.toString())
         }
       }
@@ -57,12 +57,11 @@ class ConversationsController @Inject()(auth: Authentication) extends Controller
               }
             }
             case error: JsError => {
-              println(JsError.toJson(error).toString())
               Ok(JsError.toJson(error))
             }
           }
         } catch {
-          case e: JsResultException => Ok(JsError.toJson(e.errors))
+          case e: JsResultException => Ok(JsResultExceptionJson.toJson(e))
           case x: Throwable => Ok(x.toString())
         }
 
