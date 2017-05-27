@@ -40,12 +40,10 @@ object User{
             }
           }
         )
-        println(participationInfoMerged)
         val participations : Vector[User] = participationInfoMerged.foldLeft(Vector[User]())(
           (res: Vector[User], userInfo: (ConversationKey, UserNumbers)) =>
             res.+:(User(name, countToBool(userInfo._2.participating), countToBool(userInfo._2.admin), userInfo._1))
         )
-        println(participations)
         Some(participations)
       }
     }

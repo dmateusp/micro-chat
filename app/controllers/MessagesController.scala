@@ -15,8 +15,26 @@ import models._
 @Singleton
 class MessagesController @Inject()(auth: Authentication) extends Controller {
 
-  def getAll = auth.AuthenticatedAction { implicit request =>
-    Ok("<p>Heee</p>")
+  def get = auth.AuthenticatedAction { implicit request =>
+    val jsonBody: Option[JsValue] = request.body.asJson
+    jsonBody match {
+      case Some(json) => {
+        try {
+          val conversationKey: ConversationKey = (json \ "conversation").as[ConversationKey]
+          val page: Option[Int] = (json \ "page").asOpt[Int]
+          val perPage: Option[Int] = (json \ "perPage").asOpt[Int]
+          val result : Option[Vector[Message]] = Message.get(conversationKey, page, perPage)
+          result match {
+            case Some(messages) => Ok(Json.toJson(messages))
+            case None => Ok("Conversation not found OR page/perPage error")
+          }
+        } catch {
+             case e: JsResultException => Ok(JsResultExceptionJson.toJson(e))
+             case x: Throwable => Ok(x.toString())
+        }
+      }
+      case None => Ok("ohhh")
+    }
   }
   def create = auth.AuthenticatedAction { implicit request =>
     val jsonBody: Option[JsValue] = request.body.asJson

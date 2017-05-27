@@ -63,21 +63,21 @@ Authentication: USERTOKEN
 ```
 [
   {
-    "name": "rafael@gmail.com",
-    "participating": true,
-    "admin": false,
-    "conversation": {
-      "createdBy": "dmateusp@gmail.com",
-      "conversationName": "Daniel and Rafael"
-    }
-  },
-  {
-    "name": "rafael@gmail.com",
+    "name": "user@gmail.com",
     "participating": true,
     "admin": true,
     "conversation": {
-      "createdBy": "rafael@gmail.com",
-      "conversationName": "The squad"
+      "createdBy": "user@gmail.com",
+      "conversationName": "User and User1"
+    }
+  },
+  {
+    "name": "user@gmail.com",
+    "participating": true,
+    "admin": false,
+    "conversation": {
+      "createdBy": "user1@gmail.com",
+      "conversationName": "Squad"
     }
   }
 ]
@@ -88,6 +88,54 @@ Authentication: USERTOKEN
 ---
 
 ### Messages
+
+* Getting messages in conversation
+
+`POST    /api/messages`
+
+
+**Headers:**
+```
+Authentication: USERTOKEN
+Content-Type: application/json
+```
+
+**Body:**
+```
+{
+	"conversation" : {"createdBy": "user@gmail.com", "conversationName": "User and User1"},
+  "page" : 1,
+  "perPage" : 15
+}
+```
+conversation: the object containing the unique identifier of the creator of the conversation and the name of the conversation.
+
+page: any number > 0, optional (defaults to 1)
+
+perPage: number of messages per page, any number < 51, optional (defaults to 10)
+
+**Response:**
+* Ok: Array of messages
+```
+[
+  ...
+  {
+    "sender": "user@gmail.com",
+    "body": "Hello world!"
+  },
+  ...
+  {
+    "sender": "user1@gmail.com",
+    "body": "Hello world! :)"
+  }
+  ...
+]
+```
+* Ok: with error when object passed is wrong `Conversation not found OR page/perPage wrong`
+* Bad request: if body/headers invalid/missing
+* Unauthorized/Forbidden: if authentication header token invalid or XSS filter not passing
+
+---
 
 * Posting a new message
 
