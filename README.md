@@ -40,8 +40,48 @@ UNIQUENESS: The pair (createdBy, conversationName) is used to ensure uniqueness,
   "error": "'conversationName' is undefined on object: {\"participants\":[\"user@gmail.com\", \"user2@mail.com\"],\"admins\":[\"user@gmail.com\"],\"createdBy\":\"user@gmail.com\"}"
 }```
 * Bad request: if body/headers invalid/missing or if conversation already exists
-* Unauthorized/Forbidden: if authentication header token invalid
+* Unauthorized/Forbidden: if authentication header token invalid or XSS filter not passing
 
+
+* Getting conversation information for a given user
+
+`GET    /api/users/:USER`
+
+**Parameters:**
+
+:USER = the unique identifier of your user
+
+**Headers:**
+```
+Authentication: USERTOKEN
+```
+
+** Response example: **
+* Ok: with information about your user (example for `/api/users/rafael@gmail.com`)
+```
+[
+  {
+    "name": "rafael@gmail.com",
+    "participating": true,
+    "admin": false,
+    "conversation": {
+      "createdBy": "dmateusp@gmail.com",
+      "conversationName": "Daniel and Rafael"
+    }
+  },
+  {
+    "name": "rafael@gmail.com",
+    "participating": true,
+    "admin": true,
+    "conversation": {
+      "createdBy": "rafael@gmail.com",
+      "conversationName": "The squad"
+    }
+  }
+]
+```
+* Ok : with response "User does not exist"
+* Unauthorized/Forbidden: if authentication header token invalid or XSS filter not passing
 
 ## Tech
 The application is written in Scala and using Play Framework, the DB is Redis

@@ -24,7 +24,7 @@ object User{
   (JsPath \ "conversation").write[ConversationKey])(unlift(User.unapply))
 
   private val boolToNumber : (Boolean) => Int = (bool) => if(bool) 1 else -1
-  private val numberToBool : (Int) => Boolean = (int) => if(int != 0) true else false
+  private val countToBool : (Int) => Boolean = (int) => int > 0
 
   val getConversations : (String) => Option[Vector[User]] = (name) => {
     DB.pool.withClient { client =>
@@ -35,15 +35,17 @@ object User{
             val pInfoNumbers : UserNumbers = pInfo.toNumbers()
             val currentValue : Option[UserNumbers] = res.get(pInfo.conversation)
             currentValue match {
-              case Some(p) => res + (pInfo.conversation -> p.merge(pInfoNumbers))
-              case None => res + (pInfo.conversation -> pInfoNumbers)
+              case Some(p) => res - pInfo.conversation + (pInfo.conversation -> p.merge(pInfoNumbers))
+              case None => res - pInfo.conversation + (pInfo.conversation -> pInfoNumbers)
             }
           }
         )
+        println(participationInfoMerged)
         val participations : Vector[User] = participationInfoMerged.foldLeft(Vector[User]())(
           (res: Vector[User], userInfo: (ConversationKey, UserNumbers)) =>
-            res.+:(User(name, numberToBool(userInfo._2.participating), numberToBool(userInfo._2.admin), userInfo._1))
+            res.+:(User(name, countToBool(userInfo._2.participating), countToBool(userInfo._2.admin), userInfo._1))
         )
+        println(participations)
         Some(participations)
       }
     }
@@ -65,7 +67,14 @@ case class Conversation(participants: Vector[String], admins: Vector[String]){
       if(!client.lrange(dbKey, 0, 0).isEmpty) false else {
         client.rpush(dbKey, Json.stringify(Json.obj(("sender", "BOT"), ("msg", "Welcome!"))))
         participants.map(
-          participant => client.rpush(participant, Json.stringify(Json.toJson(User(participant, true, admins.contains(participant),conversationKey))))
+          participant => {
+              // creating conversation for user and setting all rights to true
+              client.rpush(participant, Json.stringify(Json.toJson(User(participant, true, true,conversationKey))))
+
+              // removing admin rights if user is not admin
+              if (!admins.contains(participant))
+                client.rpush(participant, Json.stringify(Json.toJson(User(participant, true, false,conversationKey))))
+          }
         )
         true
       }
