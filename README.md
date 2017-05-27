@@ -91,7 +91,7 @@ Authentication: USERTOKEN
 
 * Posting a new message
 
-`POST    /api/messages`
+`POST    /api/messages/new`
 
 
 **Headers:**

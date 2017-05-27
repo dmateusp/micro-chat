@@ -5,7 +5,7 @@
 
 # MESSAGES
 GET     /api/messages                  controllers.MessagesController.getAll
-POST    /api/messages                  controllers.MessagesController.create
+POST    /api/messages/new              controllers.MessagesController.create
 
 # CONVERSATIONS
 POST   /api/conversations              controllers.ConversationsController.create
