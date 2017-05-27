@@ -10,4 +10,5 @@ POST    /api/messages/new              controllers.MessagesController.create
 # CONVERSATIONS
 POST   /api/conversations              controllers.ConversationsController.create
 
+# USERS
 GET    /api/users/:user                controllers.ConversationsController.getConversations(user: String)

@@ -6,6 +6,7 @@ import play.api.mvc._
 import play.api.mvc.Results._
 import utils._
 import play.api.libs.json._
+import services._
 import models._
 
 /**
@@ -15,20 +16,13 @@ import models._
 @Singleton
 class ConversationsController @Inject()(auth: Authentication) extends Controller {
 
-  def index = Action { implicit request =>
-    Ok("test")
-  }
-
   def create = auth.AuthenticatedAction { implicit request =>
     val jsonBody: Option[JsValue] = request.body.asJson
-    println("he")
     jsonBody match {
       case Some(json) => {
         try{
-          println("jeorjaer")
           val newConversation: Conversation = Conversation((json \ "participants").as[Vector[String]], (json \ "admins").as[Vector[String]])
           val result = newConversation.save(ConversationKey((json \ "createdBy").as[String], (json \ "conversationName").as[String]))
-          println("heu")
           if(result) {
             Ok("Conversation created!")
           } else {
@@ -44,7 +38,7 @@ class ConversationsController @Inject()(auth: Authentication) extends Controller
   }
 
   def getConversations(user: String) = auth.AuthenticatedAction { implicit request =>
-    val result = User.getConversations(user)
+    val result = new UserService(new RedisUserRepository()).getParticipations(user)
     result match {
       case Some(r) => Ok(Json.toJson(r))
       case None => Ok("User does not exist")

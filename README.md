@@ -151,7 +151,7 @@ Content-Type: application/json
 **Body:**
 ```
 {
-	"conversation" : {"createdBy": "dmateusp@gmail.com", "conversationName": "Daniel and Rafael"},
+  "conversation" : {"createdBy": "dmateusp@gmail.com", "conversationName": "Daniel and Rafael"},
 	"sender" : "dmateusp@gmail.com",
 	"body": "Hello world!"
 }
