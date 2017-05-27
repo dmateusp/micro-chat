@@ -83,6 +83,45 @@ Authentication: USERTOKEN
 * Ok : with response "User does not exist"
 * Unauthorized/Forbidden: if authentication header token invalid or XSS filter not passing
 
+### Messages
+
+* Posting a new message
+
+`POST    /api/messages`
+
+
+**Headers:**
+```
+Authentication: USERTOKEN
+Content-Type: application/json
+```
+
+**Body:**
+```
+{
+	"conversation" : {"createdBy": "dmateusp@gmail.com", "conversationName": "Daniel and Rafael"},
+	"sender" : "dmateusp@gmail.com",
+	"body": "Hello world!"
+}
+```
+conversation: the object containing the unique identifier of the creator of the conversation and the name of the conversation.
+
+sender: the sender of the message
+
+body: the content of the message
+
+**Response:**
+* Ok: "success"
+* Ok with error when a field is missing, example
+```
+{
+  "error": "'conversationName' is undefined on object: {\"participants\":[\"user@gmail.com\", \"user2@mail.com\"],\"admins\":[\"user@gmail.com\"],\"createdBy\":\"user@gmail.com\"}"
+}```
+* Bad request: if body/headers invalid/missing
+* Unauthorized/Forbidden: if authentication header token invalid or XSS filter not passing
+
+
+
 ## Tech
 The application is written in Scala and using Play Framework, the DB is Redis
 

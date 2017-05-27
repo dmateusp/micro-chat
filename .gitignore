@@ -9,5 +9,6 @@ redis.conf
 /.settings
 /RUNNING_PID
 /db/*
+app/db/Connection.scala
 
 !*.gitkeep
