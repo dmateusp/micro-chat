@@ -43,6 +43,7 @@ UNIQUENESS: The pair (createdBy, conversationName) is used to ensure uniqueness,
 * Bad request: if body/headers invalid/missing or if conversation already exists
 * Unauthorized/Forbidden: if authentication header token invalid or XSS filter not passing
 
+---
 
 * Getting conversation information for a given user
 
@@ -83,6 +84,8 @@ Authentication: USERTOKEN
 ```
 * Ok : with response "User does not exist"
 * Unauthorized/Forbidden: if authentication header token invalid or XSS filter not passing
+
+---
 
 ### Messages
 
