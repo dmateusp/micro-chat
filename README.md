@@ -110,7 +110,7 @@ Content-Type: application/json
 ```
 conversation: the object containing the unique identifier of the creator of the conversation and the name of the conversation.
 
-page: any number > 0, optional (defaults to 1)
+page: any number > 0, optional (defaults to 1), page 1 will have the most recent messages
 
 perPage: number of messages per page, any number < 51, optional (defaults to 10)
 
