@@ -13,7 +13,8 @@ libraryDependencies ++= Seq(
   ws,
   cache,
   "com.pauldijou" %% "jwt-play" % "0.12.1",
-  "org.sedis" %% "sedis" % "1.2.2"
+  "org.sedis" %% "sedis" % "1.2.2",
+  "org.mockito" % "mockito-core" % "1.8.5"
 )
 
 // Adds additional packages into Twirl

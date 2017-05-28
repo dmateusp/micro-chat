@@ -12,6 +12,9 @@ case class User(name: String, participating: Boolean, admin: Boolean, conversati
   val toNumbers : () => UserNumbers = () => UserNumbers(name, User.boolToNumber(participating), User.boolToNumber(admin))
 }
 object User{
+  private val boolToNumber : (Boolean) => Int = (bool) => if(bool) 1 else -1
+  private val countToBool : (Int) => Boolean = (int) => int > 0
+  
   implicit val userReads: Reads[User] = (
   (JsPath \ "name").read[String] and
   (JsPath \ "participating").read[Boolean] and

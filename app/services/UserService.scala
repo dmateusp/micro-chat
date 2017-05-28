@@ -15,13 +15,14 @@ and as much logic as possible, and abstract database access behind a repository 
 */
 
 trait UserRepository {
-  val getConversations: (String) => Option[Vector[User]]
+  def getConversations(user: String) : Option[Vector[User]]
 }
 
+
 class RedisUserRepository extends UserRepository {
-  val getConversations: (String) => Option[Vector[User]] = (name) => {
+  def getConversations(user: String) : Option[Vector[User]] = {
     DB.pool.withClient { client =>
-      val participationsRaw: Vector[User] = client.lrange(name, 0, -1).map((u: String) => Json.parse(u).as[User]).toVector
+      val participationsRaw: Vector[User] = client.lrange(user, 0, -1).map((u: String) => Json.parse(u).as[User]).toVector
       if(participationsRaw.isEmpty) None else Some(participationsRaw)
     }
   }
@@ -31,8 +32,8 @@ class UserService(userRepository: UserRepository){
   private val boolToNumber : (Boolean) => Int = (bool) => if(bool) 1 else -1
   private val countToBool : (Int) => Boolean = (int) => int > 0
 
-  val getParticipations: (String) => Option[Vector[User]] = (name) => {
-    userRepository.getConversations(name) match {
+  def getParticipations(user: String) : Option[Vector[User]] = {
+    userRepository.getConversations(user) match {
       case Some(participationsRaw) => {
         val participationInfoMerged: Map[ConversationKey, UserNumbers] = participationsRaw.foldLeft(Map[ConversationKey,UserNumbers]())(
           (res: Map[ConversationKey, UserNumbers], pInfo) => {
@@ -46,7 +47,7 @@ class UserService(userRepository: UserRepository){
         )
         val participations : Vector[User] = participationInfoMerged.foldLeft(Vector[User]())(
           (res: Vector[User], userInfo: (ConversationKey, UserNumbers)) =>
-            res.+:(User(name, countToBool(userInfo._2.participating), countToBool(userInfo._2.admin), userInfo._1))
+            res.+:(User(user, countToBool(userInfo._2.participating), countToBool(userInfo._2.admin), userInfo._1))
         )
         Some(participations)
       }
